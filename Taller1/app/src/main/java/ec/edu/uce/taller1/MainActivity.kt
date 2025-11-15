@@ -30,8 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TALLER1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
-                    containerColor = Color(0xFF2196F3)) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         modifier = Modifier.padding(innerPadding)
                     )
