@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Taller 3</string>
+    <string name="dice_roller">Lanzar Dados</string>
+    <string name="lemonade">Limonada</string>
+    <string name="select_app">Selecciona una App</string>
+    <string name="back_menu">Volver al Menú</string>
+    <!--  Dice Roller  -->
+    <string name="roll">Lanzar</string>
+    <string name="result_label">Resultado: %1$s</string>
+    <string name="one">UNO</string>
+    <string name="two">DOS</string>
+    <string name="three">TRES</string>
+    <string name="four">CUATRO</string>
+    <string name="five">CINCO</string>
+    <string name="six">SEIS</string>
+    <!--  Lemonade  -->
+    <string name="lemon_select">Toca el limonero para seleccionar un limón</string>
+    <string name="lemon_squeeze">Sigue tocando el limón para exprimirlo</string>
+    <string name="lemon_drink">Toca la limonada para beberla</string>
+    <string name="lemon_empty_glass">Toca el vaso vacío para empezar de nuevo</string>
+    <string name="lemon_tree_content_description">Limonero</string>
+    <string name="lemon_content_description">Limón</string>
+    <string name="lemonade_content_description">Vaso de limonada</string>
+    <string name="empty_glass_content_description">Vaso vacío</string>
+</resources>

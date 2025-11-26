@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Workshop 3</string>
+    <string name="dice_roller">Dice Roller</string>
+    <string name="lemonade">Lemonade</string>
+    <string name="select_app">Select an App</string>
+    <string name="back_menu">Back to Menu</string>
+
+    <!-- Dice Roller -->
+    <string name="roll">Roll</string>
+    <string name="result_label">Result: %1$s</string>
+    <string name="one">ONE</string>
+    <string name="two">TWO</string>
+    <string name="three">THREE</string>
+    <string name="four">FOUR</string>
+    <string name="five">FIVE</string>
+    <string name="six">SIX</string>
+
+    <!-- Lemonade -->
+    <string name="lemon_select">Tap the lemon tree to select a lemon</string>
+    <string name="lemon_squeeze">Keep tapping the lemon to squeeze it</string>
+    <string name="lemon_drink">Tap the lemonade to drink it</string>
+    <string name="lemon_empty_glass">Tap the empty glass to start again</string>
+    <string name="lemon_tree_content_description">Lemon tree</string>
+    <string name="lemon_content_description">Lemon</string>
+    <string name="lemonade_content_description">Glass of lemonade</string>
+    <string name="empty_glass_content_description">Empty glass</string>
+</resources>
+
