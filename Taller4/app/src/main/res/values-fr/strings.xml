@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dessert</string>
+    <string name="order_desserts">Commander des Desserts</string>
+    <string name="one_cupcake">Un Cupcake</string>
+    <string name="six_cupcakes">Six Cupcakes</string>
+    <string name="twelve_cupcakes">Douze Cupcakes</string>
+    <string name="choose_item">Choisir un Article</string>
+    <string name="cupcake">Cupcake</string>
+    <string name="cake_pop">Cake Pop</string>
+    <string name="coffee">Café</string>
+    <string name="special_flavor">Saveur Spéciale</string>
+    <string name="cancel">Annuler</string>
+    <string name="next">Suivant</string>
+    <string name="choose_pickup_date">Choisir la Date de Retrait</string>
+    <string name="order_summary">Résumé de la Commande</string>
+    <string name="send">Envoyer la Commande à une Autre Application</string>
+    <string name="quantity">Quantité</string>
+    <string name="item">Article</string>
+    <string name="pickup_date">Date de retrait</string>
+    <string name="subtotal_price">Sous-total %s</string>
+    <string name="total_price">Total %s</string>
+    <string name="new_dessert_order">Nouvelle Commande de Dessert</string>
+    <string name="order_details">Quantité: %1$s \nArticle: %2$s \nDate de retrait: %3$s \nTotal: %4$s \n\nMerci!</string>
+    <string name="back_button">Retour</string>
+    <plurals name="cupcakes">
+        <item quantity="one">%d cupcake</item>
+        <item quantity="other">%d cupcakes</item>
+    </plurals>
+</resources>
