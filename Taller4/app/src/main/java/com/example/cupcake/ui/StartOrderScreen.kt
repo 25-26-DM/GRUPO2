@@ -63,7 +63,7 @@ fun StartOrderScreen(
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
             Image(
-                painter = painterResource(R.drawable.cupcake),
+                painter = painterResource(R.drawable.food_plate),
                 contentDescription = null,
                 modifier = Modifier.width(300.dp)
             )
@@ -110,7 +110,7 @@ fun SelectItemScreen(
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
             Image(
-                painter = painterResource(R.drawable.cupcake),
+                painter = painterResource(R.drawable.food_plate),
                 contentDescription = null,
                 modifier = Modifier.width(300.dp)
             )

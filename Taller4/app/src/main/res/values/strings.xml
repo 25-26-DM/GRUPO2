@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2023 The Android Open Source Project
 
@@ -14,31 +15,41 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">Dessert</string>
-    <string name="order_desserts">Order Desserts</string>
-    <string name="one_cupcake">One Cupcake</string>
-    <string name="six_cupcakes">Six Cupcakes</string>
-    <string name="twelve_cupcakes">Twelve Cupcakes</string>
-    <string name="choose_item">Choose Item</string>
-    <string name="cupcake">Cupcake</string>
-    <string name="cake_pop">Cake Pop</string>
-    <string name="coffee">Coffee</string>
-    <string name="special_flavor">Special Flavor</string>
-    <string name="cancel">Cancel</string>
-    <string name="next">Next</string>
-    <string name="choose_pickup_date">Choose Pickup Date</string>
-    <string name="order_summary">Order Summary</string>
-    <string name="send">Send Order to Another App</string>
-    <string name="quantity">Quantity</string>
-    <string name="item">Item</string>
-    <string name="pickup_date">Pickup date</string>
+    <string name="app_name">Comida</string>
+    <string name="order_desserts">Pedir Comida</string>
+    <string name="one_cupcake">Un Plato</string>
+    <string name="six_cupcakes">Seis Platos</string>
+    <string name="twelve_cupcakes">Doce Platos</string>
+    <string name="choose_item">Elegir Plato</string>
+    <string name="cancel">Cancelar</string>
+    <string name="next">Siguiente</string>
+    <string name="choose_pickup_date">Elegir fecha de entrega</string>
+    <string name="order_summary">Resumen del Pedido</string>
+    <string name="send">Enviar Pedido</string>
+    <string name="quantity">Cantidad</string>
+    <string name="item">Plato</string>
+    <string name="pickup_date">Fecha de entrega</string>
     <string name="subtotal_price">Subtotal %s</string>
     <string name="total_price">Total %s</string>
-    <string name="new_dessert_order">New Dessert Order</string>
-    <string name="order_details">Quantity: %1$s \nItem: %2$s \nPickup date: %3$s \nTotal: %4$s \n\nThank you!</string>
-    <string name="back_button">Back</string>
+    <string name="new_dessert_order">Nuevo Pedido de Comida</string>
+    <string name="order_details">Cantidad: %1$s 
+Plato: %2$s 
+Fecha de entrega: %3$s 
+Total: %4$s 
+
+¡Gracias!</string>
+    <string name="back_button">Atrás</string>
+    <string name="encebollado">Encebollado</string>
+    <string name="ceviche">Ceviche</string>
+    <string name="hornado">Hornado</string>
+    <string name="guatita">Guatita</string>
+    <string name="seco_pollo">Seco de Pollo</string>
+    <string name="fritada">Fritada</string>
+    <string name="llapingacho">Llapingacho</string>
+    <string name="bolon">Bolón</string>
+    <string name="humita">Humita</string>
     <plurals name="cupcakes">
-        <item quantity="one">%d cupcake</item>
-        <item quantity="other">%d cupcakes</item>
+        <item quantity="one">%d plato</item>
+        <item quantity="other">%d platos</item>
     </plurals>
 </resources>

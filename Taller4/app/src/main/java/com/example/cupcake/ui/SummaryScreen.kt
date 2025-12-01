@@ -106,19 +106,16 @@ fun OrderSummaryScreen(
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { 
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_EMAIL, arrayOf("amelizalde@uce.edu.ec"))
-                            putExtra(Intent.EXTRA_SUBJECT, newOrder)
-                            putExtra(Intent.EXTRA_TEXT, orderSummary)
-                        }
-                        context.startActivity(
-                            Intent.createChooser(
-                                intent,
-                                context.getString(R.string.send)
-                            )
+                    onClick = {
+                        fun encodeMailParam(param: String): String =
+                            java.net.URLEncoder.encode(param, "UTF-8").replace("+", "%20")
+                        val uri = android.net.Uri.parse(
+                            "mailto:grupo2dispositivos@gmail.com" +
+                            "?subject=" + encodeMailParam(newOrder) +
+                            "&body=" + encodeMailParam(orderSummary)
                         )
+                        val intent = Intent(Intent.ACTION_SENDTO, uri)
+                        context.startActivity(intent)
                     }
                 ) {
                     Text(stringResource(R.string.send))

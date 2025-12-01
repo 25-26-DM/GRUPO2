@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Postre</string>
-    <string name="order_desserts">Pedir Postres</string>
-    <string name="one_cupcake">Un Cupcake</string>
-    <string name="six_cupcakes">Seis Cupcakes</string>
-    <string name="twelve_cupcakes">Doce Cupcakes</string>
-    <string name="choose_item">Elegir Artículo</string>
-    <string name="cupcake">Cupcake</string>
-    <string name="cake_pop">Cake Pop</string>
-    <string name="coffee">Café</string>
-    <string name="special_flavor">Sabor Especial</string>
+    <string name="app_name">Comida</string>
+    <string name="order_desserts">Pedir Comida</string>
+    <string name="one_cupcake">Un Plato</string>
+    <string name="six_cupcakes">Seis Platos</string>
+    <string name="twelve_cupcakes">Doce Platos</string>
+    <string name="choose_item">Elegir Plato</string>
     <string name="cancel">Cancelar</string>
     <string name="next">Siguiente</string>
-    <string name="choose_pickup_date">Elegir Fecha de Recogida</string>
+    <string name="choose_pickup_date">Elegir fecha de entrega</string>
     <string name="order_summary">Resumen del Pedido</string>
-    <string name="send">Enviar Pedido a Otra Aplicación</string>
+    <string name="send">Enviar Pedido</string>
     <string name="quantity">Cantidad</string>
-    <string name="item">Artículo</string>
-    <string name="pickup_date">Fecha de recogida</string>
+    <string name="item">Plato</string>
+    <string name="pickup_date">Fecha de entrega</string>
     <string name="subtotal_price">Subtotal %s</string>
     <string name="total_price">Total %s</string>
-    <string name="new_dessert_order">Nuevo Pedido de Postre</string>
-    <string name="order_details">Cantidad: %1$s \nArtículo: %2$s \nFecha de recogida: %3$s \nTotal: %4$s \n\n¡Gracias!</string>
+    <string name="new_dessert_order">Nuevo Pedido de Comida</string>
+    <string name="order_details">Cantidad: %1$s 
+Plato: %2$s 
+Fecha de entrega: %3$s 
+Total: %4$s 
+
+¡Gracias!</string>
     <string name="back_button">Atrás</string>
+    <string name="encebollado">Encebollado</string>
+    <string name="ceviche">Ceviche</string>
+    <string name="hornado">Hornado</string>
+    <string name="guatita">Guatita</string>
+    <string name="seco_pollo">Seco de Pollo</string>
+    <string name="fritada">Fritada</string>
+    <string name="llapingacho">Llapingacho</string>
+    <string name="bolon">Bolón</string>
+    <string name="humita">Humita</string>
     <plurals name="cupcakes">
-        <item quantity="one">%d cupcake</item>
-        <item quantity="other">%d cupcakes</item>
+        <item quantity="one">%d plato</item>
+        <item quantity="other">%d platos</item>
     </plurals>
 </resources>

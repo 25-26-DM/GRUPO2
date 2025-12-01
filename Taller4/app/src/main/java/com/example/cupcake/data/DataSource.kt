@@ -25,8 +25,14 @@ object DataSource {
     )
 
     val itemOptions = listOf(
-        R.string.cupcake,
-        R.string.coffee,
-        R.string.cake_pop
+        R.string.encebollado,
+        R.string.ceviche,
+        R.string.hornado,
+        R.string.guatita,
+        R.string.seco_pollo,
+        R.string.fritada,
+        R.string.llapingacho,
+        R.string.bolon,
+        R.string.humita
     )
 }

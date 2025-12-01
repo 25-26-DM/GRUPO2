@@ -28,13 +28,24 @@ import java.util.Locale
 
 /** Price for a single cupcake */
 private val PRICE_PER_ITEM = mapOf(
-    "Cupcake" to 2.00,
-    "Coffee" to 1.50,
-    "Cake Pop" to 2.50
+    "Encebollado" to 4.00,
+    "Ceviche" to 5.00,
+    "Hornado" to 6.00,
+    "Guatita" to 4.50,
+    "Seco de Pollo" to 5.00,
+    "Fritada" to 5.50,
+    "Llapingacho" to 3.50,
+    "Bolón" to 2.50,
+    "Humita" to 2.00
 )
 
-/** Additional cost for same day pickup of an order */
-private const val PRICE_FOR_SAME_DAY_PICKUP = 3.00
+/** Delivery prices based on delivery day */
+private val DELIVERY_PRICES = mapOf(
+    0 to 5.00,  // Mismo día (urgente) - más caro
+    1 to 3.00,  // Día siguiente - precio medio
+    2 to 2.00,  // 2 días después - económico
+    3 to 1.50   // 3 días después - más económico
+)
 
 /**
  * [OrderViewModel] holds information about a cupcake order in terms of quantity, flavor, and
@@ -55,7 +66,7 @@ class OrderViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 quantity = numberCupcakes,
-                price = calculatePrice(quantity = numberCupcakes, item = currentState.item)
+                price = calculatePrice(quantity = numberCupcakes, item = currentState.item, includeDelivery = false)
             )
         }
     }
@@ -68,7 +79,7 @@ class OrderViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 item = desiredItem,
-                price = calculatePrice(item = desiredItem, quantity = currentState.quantity)
+                price = calculatePrice(item = desiredItem, quantity = currentState.quantity, includeDelivery = false)
             )
         }
     }
@@ -80,7 +91,7 @@ class OrderViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 date = pickupDate,
-                price = calculatePrice(pickupDate = pickupDate, item = currentState.item, quantity = currentState.quantity)
+                price = calculatePrice(pickupDate = pickupDate, item = currentState.item, quantity = currentState.quantity, includeDelivery = true)
             )
         }
     }
@@ -98,14 +109,23 @@ class OrderViewModel : ViewModel() {
     private fun calculatePrice(
         quantity: Int = _uiState.value.quantity,
         item: String = _uiState.value.item,
-        pickupDate: String = _uiState.value.date
+        pickupDate: String = _uiState.value.date,
+        includeDelivery: Boolean = false
     ): String {
         val itemPrice = PRICE_PER_ITEM[item] ?: 0.0
         var calculatedPrice = quantity * itemPrice
-        // If the user selected the first option (today) for pickup, add the surcharge
-        if (pickupOptions()[0] == pickupDate) {
-            calculatedPrice += PRICE_FOR_SAME_DAY_PICKUP
+        
+        // Solo agregar el precio de envío si includeDelivery es true
+        if (includeDelivery) {
+            val dateIndex = pickupOptions().indexOf(pickupDate)
+            val deliveryPrice = if (dateIndex >= 0) {
+                DELIVERY_PRICES[dateIndex] ?: 2.00
+            } else {
+                2.00
+            }
+            calculatedPrice += deliveryPrice
         }
+        
         val formattedPrice = NumberFormat.getCurrencyInstance().format(calculatedPrice)
         return formattedPrice
     }

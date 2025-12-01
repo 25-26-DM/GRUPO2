@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Food</string>
+    <string name="order_desserts">Order Food</string>
+    <string name="one_cupcake">One Dish</string>
+    <string name="six_cupcakes">Six Dishes</string>
+    <string name="twelve_cupcakes">Twelve Dishes</string>
+    <string name="choose_item">Choose Dish</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+    <string name="new_dessert_order">New Food Order</string>
+    <string name="order_summary">Order Summary</string>
+    <string name="send">Send Order</string>
+    <string name="quantity">Quantity</string>
+    <string name="item">Dish</string>
+    <string name="pickup_date">Delivery date</string>
+    <string name="subtotal_price">Subtotal %s</string>
+    <string name="total_price">Total %s</string>
+    <string name="order_details">Quantity: %1$s 
+Dish: %2$s 
+Delivery date: %3$s 
+Total: %4$s 
+
+Thank you!</string>
+    <string name="choose_pickup_date">Choose delivery date</string>
+    <string name="back_button">Back</string>
+    <plurals name="cupcakes">
+        <item quantity="one">%d dish</item>
+        <item quantity="other">%d dishes</item>
+    </plurals>
+    <string name="encebollado">Encebollado</string>
+    <string name="ceviche">Ceviche</string>
+    <string name="hornado">Hornado</string>
+    <string name="guatita">Guatita</string>
+    <string name="seco_pollo">Seco de Pollo</string>
+    <string name="fritada">Fritada</string>
+    <string name="llapingacho">Llapingacho</string>
+    <string name="bolon">Bolón</string>
+    <string name="humita">Humita</string>
+</resources>
