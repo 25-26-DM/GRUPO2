@@ -1,4 +1,4 @@
-package ec.edu.uce.taller9.data
+package ec.edu.uce.taller10.data
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -12,4 +12,3 @@ interface UserDao {
     @Insert
     suspend fun insertUser(user: User)
 }
-

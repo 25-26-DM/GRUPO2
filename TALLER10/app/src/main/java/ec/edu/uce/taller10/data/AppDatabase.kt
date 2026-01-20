@@ -1,9 +1,11 @@
-package ec.edu.uce.taller9.data
+package ec.edu.uce.taller10.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import ec.edu.uce.taller10.data.User
+import ec.edu.uce.taller10.data.UserDao
 
 @Database(entities = [User::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
@@ -26,4 +28,3 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
-

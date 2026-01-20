@@ -1,4 +1,4 @@
-package ec.edu.uce.taller9.data
+package ec.edu.uce.taller10.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,4 +8,3 @@ data class User(
     @PrimaryKey val username: String,
     val password: String
 )
-
