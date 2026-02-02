@@ -31,6 +31,14 @@ import ec.edu.uce.final_svacurio.sync.SyncManager
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Logout
 
 @Composable
 fun ProductsListScreen(
@@ -72,7 +80,11 @@ fun ProductsListScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 16.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+    ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
                 Text("Productos")
@@ -89,7 +101,17 @@ fun ProductsListScreen(
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }
-            Button(onClick = onLogout) { Text("Cerrar sesión") }
+            androidx.compose.material3.IconButton(
+                onClick = onLogout,
+                modifier = Modifier.size(36.dp)
+            ) {
+                androidx.compose.material3.Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Logout,
+                    contentDescription = "Cerrar sesión",
+                    tint = Color(0xFFD32F2F),
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -113,85 +135,95 @@ fun ProductsListScreen(
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8))
                 ) {
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        // Imagen del producto
-                        val imageBitmap: ImageBitmap? = remember(product.photo) {
-                            product.photo?.let {
-                                try {
-                                    BitmapFactory.decodeByteArray(it, 0, it.size)?.asImageBitmap()
-                                } catch (_: Exception) { null }
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .clip(androidx.compose.foundation.shape.RoundedCornerShape(14.dp))
-                                .background(Color(0xFFE0E0E0)),
-                            contentAlignment = Alignment.Center
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            if (imageBitmap != null) {
-                                Image(
-                                    bitmap = imageBitmap,
-                                    contentDescription = "Imagen del producto",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                            } else {
-                                Image(
-                                    painter = painterResource(id = R.drawable.logo_personal),
-                                    contentDescription = "Sin imagen",
-                                    modifier = Modifier.size(48.dp),
-                                    contentScale = ContentScale.Fit
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(18.dp))
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = product.description,
-                                    color = Color(0xFF222222),
-                                    maxLines = 2,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                when (product.syncStatus) {
-                                    "pending" -> Text("⏳", color = Color(0xFFFF9800))
-                                    "synced" -> Text("✓", color = Color(0xFF4CAF50))
-                                    "error" -> Text("✗", color = Color(0xFFF44336))
+                            val imageBitmap: ImageBitmap? = remember(product.photo) {
+                                product.photo?.let {
+                                    try {
+                                        BitmapFactory.decodeByteArray(it, 0, it.size)?.asImageBitmap()
+                                    } catch (_: Exception) { null }
                                 }
                             }
+                            Box(
+                                modifier = Modifier
+                                    .size(64.dp)
+                                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(12.dp))
+                                    .background(Color(0xFFE0E0E0)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (imageBitmap != null) {
+                                    Image(
+                                        bitmap = imageBitmap,
+                                        contentDescription = "Foto del producto",
+                                        modifier = Modifier.size(56.dp),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                } else {
+                                    Text("Sin foto", fontSize = 11.sp, color = Color.Gray)
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    product.description,
+                                    fontSize = 16.sp,
+                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                    color = Color(0xFF222222),
+                                    maxLines = 2
+                                )
+                                Text(
+                                    "Código: ${product.code}",
+                                    fontSize = 12.sp,
+                                    color = Color(0xFF757575),
+                                    maxLines = 1
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(8.dp))
+                            androidx.compose.material3.IconButton(
+                                onClick = { onEdit(product) },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                androidx.compose.material3.Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Editar producto",
+                                    tint = Color(0xFF1976D2)
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Costo:", fontSize = 12.sp, color = Color(0xFF757575))
+                            Text("$${product.cost}", fontSize = 12.sp, color = Color(0xFF388E3C), fontWeight = androidx.compose.ui.text.font.FontWeight.Medium)
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Fecha fabricación:", fontSize = 12.sp, color = Color(0xFF757575))
                             Text(
-                                text = "Código: ${product.code}",
-                                color = Color(0xFF666666),
-                                style = TextStyle(fontSize = 13.sp)
-                            )
-                            Text(
-                                text = "Costo: $${"%.2f".format(product.cost)}",
-                                color = Color(0xFF666666),
-                                style = TextStyle(fontSize = 13.sp)
-                            )
-                            Text(
-                                text = if (product.available) "Disponible" else "No disponible",
-                                color = if (product.available) Color(0xFF388E3C) else Color(0xFFD32F2F),
-                                style = TextStyle(fontSize = 13.sp)
+                                java.text.SimpleDateFormat("dd/MM/yyyy").format(java.util.Date(product.manufactureDate)),
+                                fontSize = 12.sp,
+                                color = Color(0xFF616161)
                             )
                         }
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Button(
-                            onClick = { onEdit(product) },
-                            modifier = Modifier.height(36.dp),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Editar", style = TextStyle(fontSize = 14.sp))
+                            Text("Disponibilidad:", fontSize = 12.sp, color = Color(0xFF757575))
+                            val dispText = if (product.available) "Disponible" else "Agotado"
+                            val dispColor = if (product.available) Color(0xFF1976D2) else Color(0xFFD32F2F)
+                            Text(dispText, fontSize = 12.sp, color = dispColor, fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
                         }
                     }
                 }

@@ -19,7 +19,7 @@ object DynamoDBHelper {
 
     // ¡IMPORTANTE! Usa credenciales falsas para el desarrollo local.
     // NUNCA subas credenciales reales a tu control de versiones.
-    private const val DUMMY_ACCESS_KEY = "ACCESS_KEY"
+    private const val DUMMY_ACCESS_KEY = "ACCESS_KEY"   
     private const val DUMMY_SECRET_KEY = "SECRET_KEY"
 
     // Apunta a tu instancia local de DynamoDB (por ejemplo, en Docker).
