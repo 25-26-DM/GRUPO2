@@ -132,7 +132,8 @@ class MainActivity : ComponentActivity() {
                                     context = context,
                                     onLogout = { session.clearSession(); screen = "login" },
                                     onAdd = { editingProduct = null; screen = "product_form" },
-                                    onEdit = { product -> editingProduct = product; screen = "product_form" }
+                                    onEdit = { product -> editingProduct = product; screen = "product_form" },
+                                    onDelete = { /* Eliminación manejada internamente en ProductsListScreen */ }
                                 )
                             }
                         }

@@ -66,4 +66,20 @@ class ProductController(private val context: Context) {
     suspend fun getPendingSyncCount(): Int = withContext(Dispatchers.IO) {
         db.productDao().getPendingSync().size + db.productDao().getPendingDeletion().size
     }
+
+    /**
+     * Verifica si un producto puede ser editado.
+     * No se puede editar si available = false (disponibilidad 0)
+     */
+    fun canEdit(product: Product): Boolean {
+        return product.available
+    }
+
+    /**
+     * Verifica si un producto puede ser eliminado.
+     * No se puede eliminar si available = false (disponibilidad 0)
+     */
+    fun canDelete(product: Product): Boolean {
+        return product.available
+    }
 }

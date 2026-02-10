@@ -39,22 +39,52 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.draw.alpha
+import ec.edu.uce.final_erenriquezp.service.MsgDropService
 
 @Composable
 fun ProductsListScreen(
     context: Context,
     onLogout: () -> Unit,
     onAdd: () -> Unit,
-    onEdit: (Product) -> Unit
+    onEdit: (Product) -> Unit,
+    onDelete: (Product) -> Unit = {}
 ) {
     val controller = remember { ProductController(context) }
     var products by remember { mutableStateOf<List<Product>>(emptyList()) }
     var pendingCount by remember { mutableStateOf(0) }
     var networkAvailable by remember { mutableStateOf(false) }
     var isSyncing by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf<Product?>(null) }
     val scope = rememberCoroutineScope()
     val syncManager = remember { SyncManager(context) }
     val notifier = remember { NotificationHelper(context) }
+
+    // Función para manejar edición con validación
+    fun handleEdit(product: Product) {
+        if (!controller.canEdit(product)) {
+            scope.launch {
+                val message = MsgDropService.getActionMessage("edit")
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            onEdit(product)
+        }
+    }
+
+    // Función para manejar eliminación con validación
+    fun handleDelete(product: Product) {
+        if (!controller.canDelete(product)) {
+            scope.launch {
+                val message = MsgDropService.getActionMessage("delete")
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            showDeleteDialog = product
+        }
+    }
 
     suspend fun load() {
         products = controller.getAll()
@@ -127,13 +157,18 @@ fun ProductsListScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(products) { product ->
+                // Indicador visual: productos no disponibles se ven atenuados
+                val cardAlpha = if (product.available) 1f else 0.6f
+                val cardBackground = if (product.available) Color(0xFFF8F8F8) else Color(0xFFE0E0E0)
+                
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(0.dp),
+                        .padding(0.dp)
+                        .alpha(cardAlpha),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F8F8))
+                    colors = CardDefaults.cardColors(containerColor = cardBackground)
                 ) {
                     Column(
                         modifier = Modifier
@@ -187,15 +222,31 @@ fun ProductsListScreen(
                                 )
                             }
                             Spacer(modifier = Modifier.width(8.dp))
-                            androidx.compose.material3.IconButton(
-                                onClick = { onEdit(product) },
-                                modifier = Modifier.size(32.dp)
-                            ) {
-                                androidx.compose.material3.Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Editar producto",
-                                    tint = Color(0xFF1976D2)
-                                )
+                            // Botones de acción: editar y eliminar
+                            Row {
+                                androidx.compose.material3.IconButton(
+                                    onClick = { handleEdit(product) },
+                                    modifier = Modifier.size(32.dp),
+                                    enabled = product.available
+                                ) {
+                                    androidx.compose.material3.Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Editar producto",
+                                        tint = if (product.available) Color(0xFF1976D2) else Color(0xFF9E9E9E)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(4.dp))
+                                androidx.compose.material3.IconButton(
+                                    onClick = { handleDelete(product) },
+                                    modifier = Modifier.size(32.dp),
+                                    enabled = product.available
+                                ) {
+                                    androidx.compose.material3.Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Eliminar producto",
+                                        tint = if (product.available) Color(0xFFD32F2F) else Color(0xFF9E9E9E)
+                                    )
+                                }
                             }
                         }
                         Row(
@@ -229,5 +280,33 @@ fun ProductsListScreen(
                 }
             }
         }
+    }
+
+    // Diálogo de confirmación para eliminar
+    showDeleteDialog?.let { product ->
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = null },
+            title = { Text("Confirmar eliminación") },
+            text = { Text("¿Está seguro que desea eliminar el producto '${product.description}'?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        scope.launch {
+                            controller.delete(product)
+                            showDeleteDialog = null
+                            load()
+                            Toast.makeText(context, "Producto eliminado", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                ) {
+                    Text("Eliminar")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteDialog = null }) {
+                    Text("Cancelar")
+                }
+            }
+        )
     }
 }

@@ -8,6 +8,7 @@ import ec.edu.uce.final_erenriquezp.data.User
 import aws.sdk.kotlin.services.dynamodb.DynamoDbClient
 import aws.sdk.kotlin.services.dynamodb.model.*
 import aws.smithy.kotlin.runtime.net.url.Url
+import ec.edu.uce.final_erenriquezp.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -16,11 +17,6 @@ object DynamoDBHelper {
     private const val REGION = "us-east-1"
     private const val PRODUCTS_TABLE = "Products"
     private const val USERS_TABLE = "Users"
-
-    // ¡IMPORTANTE! Usa credenciales falsas para el desarrollo local.
-    // NUNCA subas credenciales reales a tu control de versiones.
-    private const val DUMMY_ACCESS_KEY = "ACCESS_KEY"   
-    private const val DUMMY_SECRET_KEY = "SECRET_KEY"
 
     // Apunta a tu instancia local de DynamoDB (por ejemplo, en Docker).
     // 10.0.2.2 es la IP del host desde el emulador de Android.
@@ -33,13 +29,13 @@ object DynamoDBHelper {
         client = DynamoDbClient {
             region = REGION
             credentialsProvider = StaticCredentialsProvider {
-                accessKeyId = DUMMY_ACCESS_KEY
-                secretAccessKey = DUMMY_SECRET_KEY
+                accessKeyId = BuildConfig.AWS_ACCESS_KEY
+                secretAccessKey = BuildConfig.AWS_SECRET_KEY
             }
         }
     }
 
-    // ========== PRODUCT OPERATIONS ========== 
+    // ========== PRODUCT OPERATIONS ==========
 
     suspend fun putProduct(product: Product): Boolean = withContext(Dispatchers.IO) {
         try {
@@ -137,7 +133,7 @@ object DynamoDBHelper {
         }
     }
 
-    // ========== USER OPERATIONS ========== 
+    // ========== USER OPERATIONS ==========
 
     suspend fun putUser(user: User): Boolean = withContext(Dispatchers.IO) {
         try {
@@ -174,7 +170,7 @@ object DynamoDBHelper {
         }
     }
 
-    // ========== TABLE MANAGEMENT ========== 
+    // ========== TABLE MANAGEMENT ==========
 
     suspend fun createTablesIfNotExist() = withContext(Dispatchers.IO) {
         createProductsTable()

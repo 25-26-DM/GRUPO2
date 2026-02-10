@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import ec.edu.uce.final_erenriquezp.controller.ProductController
 import ec.edu.uce.final_erenriquezp.data.Product
 import ec.edu.uce.final_erenriquezp.util.FileUtils
+import ec.edu.uce.final_erenriquezp.service.MsgDropService
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -44,7 +45,17 @@ fun ProductFormScreen(
     var manufactureDate by remember { mutableStateOf(productToEdit?.manufactureDate ?: System.currentTimeMillis()) }
     var photo by remember { mutableStateOf<ByteArray?>(productToEdit?.photo) }
     var photoBitmap by remember { mutableStateOf<Bitmap?>(productToEdit?.photo?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }) }
+    var canEditProduct by remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
+
+    // Verificar si se puede editar el producto
+    LaunchedEffect(productToEdit) {
+        if (productToEdit != null && !controller.canEdit(productToEdit)) {
+            canEditProduct = false
+            val message = MsgDropService.getActionMessage("edit")
+            android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show()
+        }
+    }
 
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
         if (bitmap != null) {
@@ -66,18 +77,34 @@ fun ProductFormScreen(
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
+                // Mostrar advertencia si no se puede editar
+                if (!canEditProduct && productToEdit != null) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFCDD2))
+                    ) {
+                        Text(
+                            "Este producto no puede ser editado (disponibilidad 0)",
+                            color = Color(0xFFD32F2F),
+                            modifier = Modifier.padding(12.dp)
+                        )
+                    }
+                }
+                
                 OutlinedTextField(
                     value = code,
                     onValueChange = { code = it },
                     label = { Text("Código") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = canEditProduct
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("Descripción") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = canEditProduct
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
@@ -85,7 +112,8 @@ fun ProductFormScreen(
                     onValueChange = { cost = it },
                     label = { Text("Costo") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = canEditProduct
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -94,7 +122,8 @@ fun ProductFormScreen(
                 ) {
                     androidx.compose.material3.Checkbox(
                         checked = available,
-                        onCheckedChange = { available = it }
+                        onCheckedChange = { available = it },
+                        enabled = canEditProduct
                     )
                     Text("Disponible", modifier = Modifier.padding(start = 8.dp))
                 }
@@ -141,7 +170,7 @@ fun ProductFormScreen(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Button(onClick = { launcher.launch(null) }) { Text("Tomar foto") }
+                    Button(onClick = { launcher.launch(null) }, enabled = canEditProduct) { Text("Tomar foto") }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(onClick = onCancel) { Text("Cancelar") }
                 }
@@ -179,7 +208,8 @@ fun ProductFormScreen(
                             onSave()
                         }
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = canEditProduct || productToEdit == null
                 ) { Text("Guardar") }
             }
         }
