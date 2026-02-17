@@ -11,10 +11,52 @@
 - Manejo de sesiones con timeout
 - Notificaciones de sincronización
 - Soporte offline-first con sincronización cuando hay conexión
+- Gestión segura de credenciales AWS
+
+---
+
+## 📑 Tabla de Contenidos
+
+1. [Estructura del Proyecto](#-estructura-del-proyecto)
+2. [Arquitectura](#-arquitectura)
+3. [Dependencias](#-dependencias)
+4. [Flujo de Trabajo](#-flujo-de-trabajo)
+5. [Descripción de Componentes](#-descripción-de-componentes)
+6. [Configuración de Credenciales AWS](#-configuración-de-credenciales-aws)
+7. [Seguridad](#-seguridad)
+8. [Requisitos](#-requisitos)
+9. [Compilación](#-compilación)
+10. [Notas Adicionales](#-notas-adicionales)
+11. [Solución de Problemas](#-solución-de-problemas)
+12. [Contribución](#-contribución)
 
 ---
 
 ## 📁 Estructura del Proyecto
+
+### Estructura Raíz
+
+```
+REC-AMELIZALDE/
+├── .gitignore                   # Archivos ignorados por Git
+├── local.properties             # Credenciales AWS (NO en Git)
+├── local.properties.example     # Plantilla de configuración
+├── build.gradle.kts             # Configuración Gradle raíz
+├── settings.gradle.kts          # Módulos del proyecto
+├── gradle/
+│   └── libs.versions.toml       # Catálogo de versiones
+├── app/
+│   ├── build.gradle.kts         # Configuración de la app
+│   ├── proguard-rules.pro       # Reglas de ofuscación
+│   └── src/
+│       └── main/
+│           ├── AndroidManifest.xml
+│           ├── java/ec/edu/uce/rec_amelizalde/
+│           └── res/
+└── DOCUMENTACION.md             # Este archivo
+```
+
+### Estructura del Código Fuente
 
 ```
 app/src/main/java/ec/edu/uce/rec_amelizalde/
@@ -347,11 +389,146 @@ Sistema de notificaciones:
 
 ---
 
+## 🔐 Configuración de Credenciales AWS
+
+### Estructura de Archivos
+El proyecto utiliza `local.properties` para almacenar credenciales de AWS de forma segura, evitando que se suban al repositorio.
+
+```
+REC-AMELIZALDE/
+├── local.properties           # Contiene credenciales (NO se sube a Git)
+├── local.properties.example   # Plantilla para otros desarrolladores
+└── .gitignore                 # Ignora archivos sensibles
+```
+
+### Configuración Inicial
+
+**1. Copiar el archivo de ejemplo:**
+```bash
+cp local.properties.example local.properties
+```
+
+**2. Editar `local.properties` con tus credenciales:**
+```properties
+sdk.dir=/path/to/your/Android/Sdk
+
+# AWS DynamoDB Credentials
+AWS_ACCESS_KEY=tu_access_key_aqui
+AWS_SECRET_KEY=tu_secret_key_aqui
+AWS_REGION=us-east-1
+```
+
+**3. Compilar el proyecto:**
+```bash
+./gradlew assembleDebug
+```
+
+### Flujo de BuildConfig
+
+```
+local.properties
+      ↓
+app/build.gradle.kts (lee las propiedades)
+      ↓
+BuildConfig.java (generado automáticamente)
+      ↓
+DynamoDBHelper.kt (consume BuildConfig.AWS_ACCESS_KEY)
+```
+
+### Implementación en `build.gradle.kts`
+
+```kotlin
+// Load local.properties
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
+android {
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        // AWS Credentials from local.properties
+        buildConfigField("String", "AWS_ACCESS_KEY", 
+            "\"${localProperties.getProperty("AWS_ACCESS_KEY", "")}\"")
+        buildConfigField("String", "AWS_SECRET_KEY", 
+            "\"${localProperties.getProperty("AWS_SECRET_KEY", "")}\"")
+        buildConfigField("String", "AWS_REGION", 
+            "\"${localProperties.getProperty("AWS_REGION", "us-east-1")}\"")
+    }
+}
+```
+
+### Uso en `DynamoDBHelper.kt`
+
+```kotlin
+object DynamoDBHelper {
+    // AWS Credentials loaded from BuildConfig
+    private val AWS_ACCESS_KEY = BuildConfig.AWS_ACCESS_KEY
+    private val AWS_SECRET_KEY = BuildConfig.AWS_SECRET_KEY
+    private val AWS_REGION = BuildConfig.AWS_REGION
+
+    fun initialize(context: Context) {
+        client = DynamoDbClient {
+            region = AWS_REGION
+            credentialsProvider = StaticCredentialsProvider {
+                accessKeyId = AWS_ACCESS_KEY
+                secretAccessKey = AWS_SECRET_KEY
+            }
+        }
+    }
+}
+```
+
+### `.gitignore` - Archivos Excluidos
+
+```ignore
+# Local configuration file (SDK, credentials)
+local.properties
+
+# Secrets and credentials - NEVER commit these
+secrets.properties
+*.keystore
+*.jks
+google-services.json
+```
+
+---
+
 ## 🔐 Seguridad
 
-- **Contraseñas**: Almacenadas como hash SHA-256
-- **Sesiones**: Timeout automático por tiempo e inactividad
-- **Credenciales AWS**: Configuradas en DynamoDBHelper (usar variables de entorno en producción)
+### Mejores Prácticas Implementadas
+
+1. **Contraseñas de Usuario**: 
+   - Almacenadas como hash SHA-256
+   - Nunca se almacenan en texto plano
+
+2. **Sesiones**: 
+   - Timeout automático por tiempo (15 min)
+   - Timeout por inactividad (5 min)
+   - Almacenadas en SharedPreferences privadas
+
+3. **Credenciales AWS**: 
+   - **✅ CORRECTO**: Almacenadas en `local.properties` (ignorado por Git)
+   - **✅ CORRECTO**: Inyectadas vía BuildConfig en tiempo de compilación
+   - **❌ INCORRECTO**: ~~Hardcoded en el código fuente~~ (solucionado)
+   - Para producción: usar AWS Cognito o IAM Roles
+
+4. **Control de Versiones**:
+   - `local.properties` está en `.gitignore`
+   - Se proporciona `local.properties.example` como plantilla
+   - Credenciales nunca se suben al repositorio
+
+### Advertencias de Seguridad
+
+⚠️ **NUNCA** hagas lo siguiente:
+- Subir `local.properties` a Git
+- Hardcodear credenciales en el código
+- Compartir credenciales en canales inseguros
+- Usar credenciales de producción en desarrollo
 
 ---
 
@@ -365,15 +542,74 @@ Sistema de notificaciones:
 
 ## 🚀 Compilación
 
+### Configuración Previa
+
+**1. Clonar el repositorio:**
+```bash
+git clone <url-del-repositorio>
+cd REC-AMELIZALDE
+```
+
+**2. Configurar credenciales AWS:**
+```bash
+# Copiar el archivo de ejemplo
+cp local.properties.example local.properties
+
+# Editar con tus credenciales
+# Agregar: AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION
+```
+
+**3. Sincronizar con Gradle:**
+```bash
+# En Android Studio
+File → Sync Project with Gradle Files
+
+# O desde línea de comandos
+./gradlew build
+```
+
+### Comandos de Compilación
+
+**Debug Build:**
 ```bash
 ./gradlew assembleDebug
 ```
 
+**Release Build:**
+```bash
+./gradlew assembleRelease
+```
+
+**Limpiar y recompilar:**
+```bash
+./gradlew clean assembleDebug
+```
+
+**Ejecutar en dispositivo:**
+```bash
+./gradlew installDebug
+```
+
+### Tecnologías de Build
+
 El proyecto usa:
-- Kotlin DSL para Gradle
-- Version Catalog (libs.versions.toml)
-- Kapt para procesamiento de anotaciones Room
-- Parcelize para serialización de Product
+- **Kotlin DSL** para Gradle (build.gradle.kts)
+- **Version Catalog** (libs.versions.toml) para gestión de dependencias
+- **Kapt** para procesamiento de anotaciones Room
+- **Parcelize** para serialización de Product
+- **BuildConfig** para inyección de configuración
+
+### Estructura de Build
+
+```
+build.gradle.kts (root)          # Configuración global
+├── settings.gradle.kts          # Módulos del proyecto
+└── app/
+    └── build.gradle.kts         # Configuración de la app
+        ├── BuildConfig generation
+        ├── Dependencias
+        └── Packaging options
+```
 
 ---
 
@@ -386,3 +622,109 @@ El proyecto usa:
 3. **Imágenes**: Las fotos de productos se almacenan como `ByteArray` (BLOB) tanto en SQLite como en DynamoDB.
 
 4. **Tema**: Utiliza Material Design 3 con soporte para colores dinámicos en Android 12+.
+
+5. **Credenciales**: Las credenciales de AWS deben configurarse en `local.properties` antes de compilar. Ver sección "Configuración de Credenciales AWS".
+
+---
+
+## 🔧 Solución de Problemas
+
+### Error: "Unresolved reference 'BuildConfig'"
+
+**Problema:** El IDE no encuentra la clase `BuildConfig`.
+
+**Solución:**
+1. Asegúrate de tener `local.properties` configurado con las credenciales AWS
+2. Compila el proyecto para generar BuildConfig:
+   ```bash
+   ./gradlew assembleDebug
+   ```
+3. Sincroniza el proyecto con Gradle:
+   - **Android Studio**: File → Sync Project with Gradle Files
+   - **VS Code**: Recarga la ventana (Ctrl+Shift+P → Reload Window)
+
+### Error: AWS Credentials vacías
+
+**Problema:** Las credenciales de AWS están vacías o no se cargan.
+
+**Solución:**
+1. Verifica que `local.properties` existe en la raíz del proyecto
+2. Confirma que las propiedades están escritas correctamente:
+   ```properties
+   AWS_ACCESS_KEY=tu_clave_aqui
+   AWS_SECRET_KEY=tu_secreto_aqui
+   AWS_REGION=us-east-1
+   ```
+3. Recompila el proyecto completamente:
+   ```bash
+   ./gradlew clean assembleDebug
+   ```
+
+### Error: Room migration failed
+
+**Problema:** La migración de la base de datos falla.
+
+**Solución:**
+1. Desinstala la app del dispositivo/emulador
+2. Reinstala con:
+   ```bash
+   ./gradlew installDebug
+   ```
+3. O fuerza la recreación de la BD (solo desarrollo):
+   ```kotlin
+   Room.databaseBuilder(...).fallbackToDestructiveMigration().build()
+   ```
+
+### Error: DynamoDB connection timeout
+
+**Problema:** No se puede conectar a DynamoDB.
+
+**Solución:**
+1. Verifica las credenciales en AWS IAM
+2. Confirma que las tablas existen en la región correcta
+3. Verifica permisos IAM (`dynamodb:PutItem`, `dynamodb:GetItem`, etc.)
+4. Revisa la configuración de red del dispositivo
+
+### Sincronización no se ejecuta
+
+**Problema:** Los cambios no se sincronizan con DynamoDB.
+
+**Solución:**
+1. Verifica conectividad a Internet
+2. Revisa los logs con:
+   ```bash
+   adb logcat -s SyncManager SyncWorker DynamoDBHelper
+   ```
+3. Fuerza una sincronización manual desde ProductsListScreen
+4. Verifica que WorkManager esté habilitado
+
+---
+
+## 👥 Contribución
+
+### Setup para Nuevos Desarrolladores
+
+1. Clonar el repositorio
+2. Copiar `local.properties.example` a `local.properties`
+3. Solicitar credenciales de AWS al administrador
+4. Ejecutar `./gradlew assembleDebug`
+5. Sincronizar con Gradle en el IDE
+
+### Commits de Seguridad
+
+Antes de hacer commit, verifica que NO incluyas:
+```bash
+# Revisar cambios
+git status
+
+# Asegúrate de que local.properties NO aparezca
+# Si aparece, está en .gitignore
+git add .
+git commit -m "Tu mensaje"
+```
+
+---
+
+## 📄 Licencia
+
+Este proyecto fue desarrollado como parte del examen de recuperación de Dispositivos Móviles, 8vo Semestre, Universidad Central del Ecuador.
