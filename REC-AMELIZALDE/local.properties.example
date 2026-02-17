@@ -1,0 +1,9 @@
+# Copia este archivo a local.properties y completa con tus credenciales
+# NO subas local.properties a Git
+
+sdk.dir=/path/to/your/Android/Sdk
+
+# AWS DynamoDB Credentials
+AWS_ACCESS_KEY=your_access_key_here
+AWS_SECRET_KEY=your_secret_key_here
+AWS_REGION=us-east-1
