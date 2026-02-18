@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.kapt")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.0"
 }
 
 // Load local.properties
@@ -91,7 +92,13 @@ dependencies {
 
     // AWS SDK Kotlin DynamoDB
     implementation("aws.sdk.kotlin:dynamodb:1.+")
+    
+    // Ktor Client para llamadas HTTP
     implementation("io.ktor:ktor-client-okhttp:2.3.4")
+    implementation("io.ktor:ktor-client-core:2.3.4")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     // Room
     implementation("androidx.room:room-runtime:2.8.4")
